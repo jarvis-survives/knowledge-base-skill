@@ -45,6 +45,43 @@ knowledge-base/
 > **Note:** The primary config file is `CLAUDE.md`. For non-Claude agents, symlink or rename it:
 > `ln -s CLAUDE.md CONVENTIONS.md` or `cp CLAUDE.md CONVENTIONS.md`.
 
+## Scaling: Subdirectories
+
+The flat structure works for small teams (< ~100 docs per folder). When a folder grows beyond that, introduce **topic subdirectories**:
+
+```
+concepts/
+├── security/
+│   ├── authentication.md
+│   ├── rate-limiting.md
+│   └── cors-policy.md
+├── infrastructure/
+│   ├── deployment.md
+│   ├── monitoring.md
+│   └── ci-pipeline.md
+├── hardware/
+│   ├── thermal-management.md
+│   └── cell-monitoring.md
+└── getting-started.md          # Top-level docs still allowed
+```
+
+### When to restructure
+- A folder has **>50 files** → group by topic
+- Multiple teams contribute → group by **team or domain**
+- Hard to find things → the structure isn't serving you anymore
+
+### How to restructure
+Ask the agent: *"Reorganize concepts/ by topic"*. The agent will:
+1. Analyze all files by tags and content
+2. Propose a grouping
+3. After confirmation: move files, update all cross-references, commit
+
+### Rules
+- **Max 2 levels deep.** `concepts/security/auth.md` ✅ — `concepts/security/oauth/flows/pkce.md` ❌
+- Subdirectory names: `kebab-case`
+- The agent auto-detects the correct subdirectory from context, or asks if ambiguous
+- Update `CLAUDE.md` when adding new subdirectories (so the agent knows the taxonomy)
+
 ## Naming Conventions
 
 | Type | Pattern | Example |
