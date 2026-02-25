@@ -31,11 +31,22 @@ Agent: 4 documents updated:
 
 To initialize a fresh knowledge base, just ask: *"Set up a new knowledge base"*
 
+## What's Included
+
+| File | Purpose |
+|------|---------|
+| `SKILL.md` | Complete skill definition — all workflows, templates, and conventions |
+| `README.md` | This file |
+| `LICENSE` | MIT license |
+
 ## Repository Structure
+
+The skill creates and manages this structure:
 
 ```
 your-knowledge-base/
-├── CONVENTIONS.md      ← Settings & rules
+├── CLAUDE.md           ← Settings & rules (primary entry point)
+├── .gitignore          ← Ignores local/generated files
 ├── concepts/           ← Knowledge articles
 ├── decisions/          ← Architecture Decision Records
 ├── projects/           ← Project logs
@@ -43,30 +54,39 @@ your-knowledge-base/
 └── templates/          ← Document templates
 ```
 
+> **Using a non-Claude agent?** Symlink or rename: `ln -s CLAUDE.md CONVENTIONS.md`
+
 ## What the Agent Does
 
 | You say | Agent does |
 |---------|-----------|
 | "Document our auth approach" | Creates `concepts/authentication.md` with frontmatter, commits, pushes |
-| "Find info about deployments" | Searches files, reads matches, summarizes findings |
+| "Find info about deployments" | 3-phase search: metadata → content → semantic expansion |
 | "Update the caching guide" | Edits the file, commits with a meaningful message, pushes |
 | "Show history of the API doc" | Runs `git log`, summarizes changes in plain language |
 | "What changed since Monday?" | Reads recent commits, summarizes by category |
 | "Propose an ADR for GraphQL" | Creates branch, writes ADR in review status, suggests MR |
+| "Archive the old deploy guide" | Sets status to archived, adds archived_date, commits |
+| "What's outdated?" | Finds accepted docs not updated in >6 months |
+| "Migrate docs from ./old-docs/" | Bulk imports with auto-classification and frontmatter |
 
 ## Features
 
 - **Automatic git workflow** — pull, commit, push with conventional commit messages
-- **Document frontmatter** — YAML metadata (title, author, date, status, tags)
+- **Document frontmatter** — YAML metadata with optional `id` for cross-referencing
 - **Status lifecycle** — draft → review → accepted → archived
-- **Smart search** — searches content, titles, and tags
-- **Multi-language** — set `language` in CONVENTIONS.md, or auto-detect from user
+- **Smart search** — 3-phase: metadata scan → content grep → semantic/fuzzy matching
+- **Cross-referencing** — relative links between documents, agent resolves "what relates to X?"
+- **Multi-language** — set `language` in CLAUDE.md, or auto-detect from user
 - **Conflict resolution** — agent reads both versions and merges semantically
+- **Archive workflow** — archive outdated docs, find stale content
+- **Bulk import** — migrate existing .md/.txt/.docx files with auto-classification
 - **Templates** — included for all document types
+- **.gitignore** — sensible defaults for local files
 
 ## Configuration
 
-All settings live in `CONVENTIONS.md` at the repo root. Key options:
+All settings live in `CLAUDE.md` at the repo root. Key options:
 
 - **Language** — what language to write documents in
 - **Default author** — used when no author specified
@@ -83,4 +103,4 @@ This skill is a plain markdown file. It works with any agent framework that read
 
 ## License
 
-MIT — use it however you want.
+MIT — see [LICENSE](LICENSE).
