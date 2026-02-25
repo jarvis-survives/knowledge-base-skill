@@ -241,11 +241,15 @@ User: "Archive the old deployment guide"
 
 1. `git pull`
 2. Find the document
-3. Update frontmatter: set `status: archived`, add `archived_date: YYYY-MM-DD`
-4. If superseded, add `superseded_by: path/to/new-doc.md` to frontmatter
-5. `git add <file>`
-6. `git commit -m "docs(<scope>): archive <title>"`
-7. `git push`
+3. Read the entire file, parse the YAML frontmatter
+4. Rewrite the frontmatter block: set `status: archived`, add `archived_date: YYYY-MM-DD`
+5. If superseded, add `superseded_by: path/to/new-doc.md` to frontmatter
+6. Write the full file back (frontmatter + body unchanged)
+7. `git add <file>`
+8. `git commit -m "docs(<scope>): archive <title>"`
+9. `git push`
+
+**Important:** Always read → parse → rewrite the full frontmatter. Do not use `sed` or regex replacements on YAML — they break on multi-line values, special characters, and edge cases. Read the file, modify the parsed frontmatter fields, write it back cleanly.
 
 ```
 User: "What's outdated?"
@@ -546,3 +550,4 @@ This means the knowledge base gets smarter with use — no configuration needed.
 - For ADRs, always check the latest number and increment
 - Consider splitting complex conventions into `.claude/rules/*.md` for modularity
 - For "what relates to X?" queries, check cross-references, tags, and content mentions
+- **Never use `sed` or regex to modify YAML frontmatter.** Always read the full file, modify the parsed fields, write it back. YAML has too many edge cases for text manipulation.
